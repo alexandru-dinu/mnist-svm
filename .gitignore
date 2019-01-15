@@ -1,5 +1,11 @@
+# symlinks (will be created by add-lib.sh)
 libsvm.so.2
+scratch/svm.py
+scratch/svmutil.py
+scratch/commonutil.py
+
 data/
+
 .idea/
 
 # Byte-compiled / optimized / DLL files
