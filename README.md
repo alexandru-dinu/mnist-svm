@@ -1,1 +1,1 @@
-# MNIST classification using SVM
+# Classification tests using SVM
