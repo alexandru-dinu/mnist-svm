@@ -1,3 +1,14 @@
+import random
+import sys
+
+import svmutil
+
+from wta_svm import wta_svm
+from mwv_svm import mwv_svm
+
+train_path = "../data/pendigits/pendigits"
+test_path = "../data/pendigits/pendigits.t"
+
 """
 Examples of options: -s 0 -c 10 -t 1 -g 1 -r 1 -d 3 
 Classify a binary data with polynomial kernel (u'v+1)^3 and C = 10
@@ -34,58 +45,47 @@ The k in the -g option means the number of attributes in the input data.
 RBF Gaussian / Polinomial
 """
 
-import random
-import sys
-
-import svmutil
-
-from wta_svm import wta_svm
-from mwv_svm import mwv_svm
-
-train_path = "../data/pendigits/pendigits"
-test_path = "../data/pendigits/pendigits.t"
-
 
 def read_dataset(path, shuffle=False):
-    ys, xs = svmutil.svm_read_problem(path)
+	ys, xs = svmutil.svm_read_problem(path)
 
-    if not shuffle:
-        return ys, xs
+	if not shuffle:
+		return ys, xs
 
-    data = list(zip(ys, xs))
-    random.shuffle(data)
+	data = list(zip(ys, xs))
+	random.shuffle(data)
 
-    ys_shuf, xs_shuf = [], []
+	ys_shuf, xs_shuf = [], []
 
-    for v in data:
-        ys_shuf.append(v[0])
-        xs_shuf.append(v[1])
+	for v in data:
+		ys_shuf.append(v[0])
+		xs_shuf.append(v[1])
 
-    return ys_shuf, xs_shuf
+	return ys_shuf, xs_shuf
 
 
 def main():
-    n2i = {
-        'wta': 0,
-        'mwv': 1,
-    }
+	n2i = {
+		'wta': 0,
+		'mwv': 1,
+	}
 
-    k2i = {
-        'g': 2,
-        'p': 1
-    }
+	k2i = {
+		'g': 2,
+		'p': 1
+	}
 
-    midx = n2i[sys.argv[1]]
-    ktype = k2i[sys.argv[2]]
-    gamma = float(sys.argv[3])
+	midx = n2i[sys.argv[1]]
+	ktype = k2i[sys.argv[2]]
+	gamma = float(sys.argv[3])
 
-    ys_test, xs_test = read_dataset(test_path, shuffle=True)
-    ys_train, xs_train = read_dataset(train_path, shuffle=True)
+	ys_test, xs_test = read_dataset(test_path, shuffle=True)
+	ys_train, xs_train = read_dataset(train_path, shuffle=True)
 
-    methods = [wta_svm, mwv_svm]
+	methods = [wta_svm, mwv_svm]
 
-    methods[midx](ys_test, xs_test, ys_train, xs_train, ktype, gamma)
+	methods[midx](ys_test, xs_test, ys_train, xs_train, ktype, gamma)
 
 
 if __name__ == '__main__':
-    main()
+	main()

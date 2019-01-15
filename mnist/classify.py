@@ -1,9 +1,7 @@
 import datetime as dt
-from typing import Tuple
 
 from sklearn import svm, metrics
 
-from datasets import get_mnist_data
 from utils import *
 
 

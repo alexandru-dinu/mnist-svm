@@ -8,7 +8,6 @@ import datetime as dt
 from sklearn import svm, metrics
 from sklearn.model_selection import GridSearchCV
 
-from datasets import get_mnist_data
 from utils import *
 
 
