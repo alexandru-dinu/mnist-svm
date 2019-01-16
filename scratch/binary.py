@@ -43,119 +43,123 @@ The k in the -g option means the number of attributes in the input data.
 
 
 def gaussian_rbf(ys_test, xs_test, ys_train, xs_train):
-	"""
-	exp(-gamma*|u-v|^2)
-	vary gamma = 1/2s^2
-	"""
-	results = {}
-	num_features = len(xs_test[0])
+    """
+    exp(-gamma*|u-v|^2)
+    vary gamma = 1/2s^2
+    """
+    results = {}
+    num_features = len(xs_test[0])
 
-	gammas = np.logspace(-4, 0, num=6)
-	# gammas = [1.0 / num_features]
+    gammas = np.logspace(-4, 0, num=6)
+    # gammas = [1.0 / num_features]
 
-	for i, g in enumerate(gammas):
-		svm_params = '-h 0 -t 2 -g ' + str(round(g, 5))
-		print("\n\n{}\n".format(i), svm_params, "-" * 80)
+    for i, g in enumerate(gammas):
+        svm_params = '-h 0 -t 2 -g ' + str(round(g, 5))
+        print("\n\n{}\n".format(i), svm_params, "-" * 80)
 
-		m = svmutil.svm_train(ys_train, xs_train, svm_params)
-		p_label, p_acc, p_val = svmutil.svm_predict(ys_test, xs_test, m)
+        m = svmutil.svm_train(ys_train, xs_train, svm_params)
+        p_label, p_acc, p_val = svmutil.svm_predict(ys_test, xs_test, m)
 
-		results[g] = p_acc
+        results[g] = p_acc
 
-	for g, acc in results.items():
-		print("%f gives" % (g), acc, "\n")
+    for g, acc in results.items():
+        print("%f gives" % (g), acc, "\n")
 
 
 def polynomial(ys_test, xs_test, ys_train, xs_train):
-	"""
-	(gamma*u'*v + coef0)^degree
-	vary gamma, coef0, degree
-	"""
-	results = {}
+    """
+    (gamma*u'*v + coef0)^degree
+    vary gamma, coef0, degree
+    """
+    results = {}
 
-	num_features = len(xs_test[0])
+    num_features = len(xs_test[0])
 
-	gammas = [0.001, 0.005, 0.01, 1 / num_features, 0.1]
-	thetas = [-5, -2, 0, 2, 5]
-	degrees = [1, 2, 3, 4]
+    gammas = [0.001, 0.005, 0.01, 1 / num_features, 0.1]
+    thetas = [-5, -2, 0, 2, 5]
+    degrees = [1, 2, 3, 4]
 
-	i = 0
+    i = 0
 
-	for d in degrees:
-		for g in gammas:
-			for t in thetas:
-				svm_params = '-h 0 -t 1 -d ' + str(d) + ' -g ' + str(g) + ' -r ' + str(t)
-				info = "{}".format(i) + svm_params
+    for d in degrees:
+        for g in gammas:
+            for t in thetas:
+                svm_params = '-h 0 -t 1 -d ' + \
+                    str(d) + ' -g ' + str(g) + ' -r ' + str(t)
+                info = "{}".format(i) + svm_params
 
-				print(info)
+                print(info)
 
-				m = svmutil.svm_train(ys_train, xs_train, svm_params)
-				p_label, p_acc, p_val = svmutil.svm_predict(ys_test, xs_test, m)
+                m = svmutil.svm_train(ys_train, xs_train, svm_params)
+                p_label, p_acc, p_val = svmutil.svm_predict(
+                    ys_test, xs_test, m)
 
-				results[(d, g, t)] = p_acc
+                results[(d, g, t)] = p_acc
 
-				i += 1
-				print("-" * 80)
+                i += 1
+                print("-" * 80)
 
-	for params, acc in results.items():
-		print("{} gives {}".format(params, acc))
+    for params, acc in results.items():
+        print("{} gives {}".format(params, acc))
 
 
 def linear(ys_test, xs_test, ys_train, xs_train):
-	"""
-	u'*v
-	nothing to vary
-	"""
-	svm_params = '-t 0'
-	m = svmutil.svm_train(ys_train, xs_train, svm_params)
-	p_label, p_acc, p_val = svmutil.svm_predict(ys_test, xs_test, m)
+    """
+    u'*v
+    nothing to vary
+    """
+    svm_params = '-t 0'
+    m = svmutil.svm_train(ys_train, xs_train, svm_params)
+    p_label, p_acc, p_val = svmutil.svm_predict(ys_test, xs_test, m)
 
 
 def get_data():
-	ys, xs = svmutil.svm_read_problem(data_path)
-	data = list(zip(ys, xs))
-	random.shuffle(data)
+    ys, xs = svmutil.svm_read_problem(data_path)
+    data = list(zip(ys, xs))
+    random.shuffle(data)
 
-	return data
+    return data
 
 
 def preview(data):
-	ys, xs = zip(*data)
-	x_counts = defaultdict(lambda: 0)
-	y_counts = defaultdict(lambda: 0)
+    ys, xs = zip(*data)
+    x_counts = defaultdict(lambda: 0)
+    y_counts = defaultdict(lambda: 0)
 
-	for i in range(len(xs)):
-		for k in xs[i].keys():
-			x_counts[k] += 1
-		y_counts[ys[i]] += 1
+    for i in range(len(xs)):
+        for k in xs[i].keys():
+            x_counts[k] += 1
+        y_counts[ys[i]] += 1
 
-	fig, ax = plt.subplots(figsize=(10, 10))
-	ax.bar(y_counts.keys(), y_counts.values(), 0.5, color='g')
-	plt.xticks(np.arange(1, 3))
-	# plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
-	plt.show()
-	pass
+    fig, ax = plt.subplots(figsize=(10, 10))
+    ax.bar(y_counts.keys(), y_counts.values(), 0.5, color='g')
+    plt.xticks(np.arange(1, 3))
+    # plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
+    plt.show()
+    pass
 
 
 def main():
-	data = get_data()
+    data = get_data()
 
-	# preview(data)
-	# exit(0)
+    # preview(data)
+    # exit(0)
 
-	# split = 1500
-	split = 2000
-	ys_test, xs_test = [v[0] for v in data[:split]], [v[1] for v in data[:split]]
-	ys_train, xs_train = [v[0] for v in data[split:]], [v[1] for v in data[split:]]
+    # split = 1500
+    split = 2000
+    ys_test, xs_test = [v[0] for v in data[:split]], [v[1]
+                                                      for v in data[:split]]
+    ys_train, xs_train = [v[0]
+                          for v in data[split:]], [v[1] for v in data[split:]]
 
-	kernels = {
-		"rbf" : gaussian_rbf,
-		"poly": polynomial,
-		"lin" : linear
-	}
+    kernels = {
+        "rbf": gaussian_rbf,
+        "poly": polynomial,
+        "lin": linear
+    }
 
-	kernels[sys.argv[1]](ys_test, xs_test, ys_train, xs_train)
+    kernels[sys.argv[1]](ys_test, xs_test, ys_train, xs_train)
 
 
 if __name__ == '__main__':
-	main()
+    main()

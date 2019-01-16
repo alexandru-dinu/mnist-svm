@@ -33,7 +33,8 @@ def wta_predict_single(classifiers, y, x):
     vals = [None] * num_classes
 
     for cls in range(num_classes):
-        p_label, p_acc, p_val = svmutil.svm_predict([y], [x], classifiers[cls], options='-q')
+        p_label, p_acc, p_val = svmutil.svm_predict(
+            [y], [x], classifiers[cls], options='-q')
 
         decision_val = p_val[0][0]
 

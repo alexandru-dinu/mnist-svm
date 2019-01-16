@@ -50,69 +50,70 @@ RBF Gaussian / Polinomial
 
 
 def read_dataset(path, shuffle=False):
-	ys, xs = svmutil.svm_read_problem(path)
+    ys, xs = svmutil.svm_read_problem(path)
 
-	if not shuffle:
-		return ys, xs
+    if not shuffle:
+        return ys, xs
 
-	data = list(zip(ys, xs))
-	random.shuffle(data)
+    data = list(zip(ys, xs))
+    random.shuffle(data)
 
-	ys_shuf, xs_shuf = [], []
+    ys_shuf, xs_shuf = [], []
 
-	for v in data:
-		ys_shuf.append(v[0])
-		xs_shuf.append(v[1])
+    for v in data:
+        ys_shuf.append(v[0])
+        xs_shuf.append(v[1])
 
-	return ys_shuf, xs_shuf
+    return ys_shuf, xs_shuf
 
 
 def get_data():
-	ys_train, xs_train = read_dataset(train_path, shuffle=True)
-	ys_test, xs_test = read_dataset(test_path, shuffle=True)
+    ys_train, xs_train = read_dataset(train_path, shuffle=True)
+    ys_test, xs_test = read_dataset(test_path, shuffle=True)
 
-	return (ys_train, xs_train), (ys_test, xs_test)
+    return (ys_train, xs_train), (ys_test, xs_test)
 
 
 def preview(train, test):
-	(ys_train, xs_train), (ys_test, xs_test) = train, test
+    (ys_train, xs_train), (ys_test, xs_test) = train, test
 
-	x_counts = defaultdict(lambda: 0)
-	y_counts = defaultdict(lambda: 0)
+    x_counts = defaultdict(lambda: 0)
+    y_counts = defaultdict(lambda: 0)
 
-	xs = xs_train + xs_test
-	ys = ys_train + ys_test
-	for i in range(len(xs)):
-		for k in xs[i].keys():
-			x_counts[k] += 1
-		y_counts[ys[i]] += 1
+    xs = xs_train + xs_test
+    ys = ys_train + ys_test
+    for i in range(len(xs)):
+        for k in xs[i].keys():
+            x_counts[k] += 1
+        y_counts[ys[i]] += 1
 
-	fig, ax = plt.subplots(figsize=(10, 10))
-	ax.bar(y_counts.keys(), y_counts.values(), 0.5, color='g')
-	plt.xticks(np.arange(10))
-	# plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
-	plt.show()
-	pass
+    fig, ax = plt.subplots(figsize=(10, 10))
+    ax.bar(y_counts.keys(), y_counts.values(), 0.5, color='g')
+    plt.xticks(np.arange(10))
+    # plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
+    plt.show()
+    pass
 
 
 def main():
-	(ys_train, xs_train), (ys_test, xs_test) = get_data()
+    (ys_train, xs_train), (ys_test, xs_test) = get_data()
 
-	# preview((ys_train, xs_train), (ys_test, xs_test))
-	# exit(0)
+    # preview((ys_train, xs_train), (ys_test, xs_test))
+    # exit(0)
 
-	k2i = {
-		'rbf' : 2,
-		'poly': 1
-	}
+    k2i = {
+        'rbf': 2,
+        'poly': 1
+    }
 
-	methods = {
-		"wta": wta_svm,
-		"mwv": mwv_svm
-	}
+    methods = {
+        "wta": wta_svm,
+        "mwv": mwv_svm
+    }
 
-	methods[sys.argv[1]](ys_test, xs_test, ys_train, xs_train, ktype=k2i[sys.argv[2]], gamma=float(sys.argv[3]))
+    methods[sys.argv[1]](ys_test, xs_test, ys_train, xs_train,
+                         ktype=k2i[sys.argv[2]], gamma=float(sys.argv[3]))
 
 
 if __name__ == '__main__':
-	main()
+    main()

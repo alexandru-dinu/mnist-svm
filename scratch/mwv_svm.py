@@ -79,7 +79,8 @@ def mwv_svm(ys_test, xs_test, ys_train, xs_train, ktype, gamma):
     ys_by_classes, xs_by_classes = mwv_prepare_datasets(ys_train, xs_train)
 
     print("Constructing classifiers...")
-    classifiers = mwv_construct_classifiers(ys_by_classes, xs_by_classes, ktype, gamma)
+    classifiers = mwv_construct_classifiers(
+        ys_by_classes, xs_by_classes, ktype, gamma)
 
     print("Evaluating model...")
     acc = mwv_accuracy(classifiers, ys_test, xs_test)
