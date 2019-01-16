@@ -1,4 +1,5 @@
 from typing import Tuple
+import os
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -11,12 +12,14 @@ mnist_mean, mnist_stddev = 0.1307, 0.3081
 def get_mnist_data() -> Tuple[Tuple[np.ndarray, np.ndarray], Tuple[np.ndarray, np.ndarray]]:
 	print("[+] Fetching data...")
 
+	path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../data/mnist")
+
 	# 60000 x 28 x 28
-	train_loader = datasets.MNIST('../data/mnist', train=True, download=True)
+	train_loader = datasets.MNIST(path, train=True, download=True)
 	train_size = train_loader.train_labels.size(0)
 
 	# 10000 x 28 x 28
-	test_loader = datasets.MNIST('../data/mnist', train=False, download=True)
+	test_loader = datasets.MNIST(path, train=False, download=True)
 	test_size = test_loader.test_labels.size(0)
 
 	train_data = np.zeros(train_loader.train_data.shape)
@@ -102,3 +105,7 @@ def plot_param_space_heatmap(scores, C_range, gamma_range):
 	plt.yticks(np.arange(len(C_range)), C_range)
 	plt.title('Validation accuracy')
 	plt.show()
+
+
+if __name__ == "__main__":
+	get_mnist_data()
