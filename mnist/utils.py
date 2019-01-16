@@ -96,7 +96,7 @@ def plot_param_space_heatmap(scores, C_range, gamma_range):
 	plt.imshow(scores, interpolation='nearest', cmap=plt.cm.jet,
 			   norm=MidpointNormalize(vmin=0.5, midpoint=0.9))
 	plt.xlabel('gamma')
-	plt.ylabel('C')
+	plt.ylabel('degree')
 	plt.colorbar()
 	plt.xticks(np.arange(len(gamma_range)), gamma_range, rotation=45)
 	plt.yticks(np.arange(len(C_range)), C_range)

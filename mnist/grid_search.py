@@ -12,17 +12,10 @@ from utils import *
 
 
 def generate_parameters():
-	# [ [10^-3,	5*10^-3],
-	#   [10^-2, 5*10^-2],
-	#   ......
-	#   [10^0,	5*10^0] ]
-	gamma_range = np.outer(np.logspace(-3, 0, 4), np.array([1, 5]))
+	gamma_range = np.outer(np.logspace(-3, 0, 4), np.array([1, 2, 5]))
 	gamma_range = gamma_range.flatten()
 
-	# [ [10^-1, 5*10^-3],
-	#   [10^0,  5*10^-2],
-	#   [10^1,	5*10^0] ]
-	C_range = np.outer(np.logspace(-1, 1, 3), np.array([1, 5]))
+	C_range = np.outer(np.logspace(-1, 1, 3), np.array([1, 2, 5]))
 	C_range = C_range.flatten()
 
 	parameters = {'kernel': ['rbf'], 'C': C_range, 'gamma': gamma_range}

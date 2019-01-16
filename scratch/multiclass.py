@@ -1,10 +1,13 @@
 import random
 import sys
+from collections import defaultdict
+
+import matplotlib.pyplot as plt
+import numpy as np
 
 import svmutil
-
-from wta_svm import wta_svm
 from mwv_svm import mwv_svm
+from wta_svm import wta_svm
 
 train_path = "../data/pendigits/pendigits"
 test_path = "../data/pendigits/pendigits.t"
@@ -64,27 +67,51 @@ def read_dataset(path, shuffle=False):
 	return ys_shuf, xs_shuf
 
 
+def get_data():
+	ys_train, xs_train = read_dataset(train_path, shuffle=True)
+	ys_test, xs_test = read_dataset(test_path, shuffle=True)
+
+	return (ys_train, xs_train), (ys_test, xs_test)
+
+
+def preview(train, test):
+	(ys_train, xs_train), (ys_test, xs_test) = train, test
+
+	x_counts = defaultdict(lambda: 0)
+	y_counts = defaultdict(lambda: 0)
+
+	xs = xs_train + xs_test
+	ys = ys_train + ys_test
+	for i in range(len(xs)):
+		for k in xs[i].keys():
+			x_counts[k] += 1
+		y_counts[ys[i]] += 1
+
+	fig, ax = plt.subplots(figsize=(10, 10))
+	ax.bar(y_counts.keys(), y_counts.values(), 0.5, color='g')
+	plt.xticks(np.arange(10))
+	# plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
+	plt.show()
+	pass
+
+
 def main():
-	n2i = {
-		'wta': 0,
-		'mwv': 1,
-	}
+	(ys_train, xs_train), (ys_test, xs_test) = get_data()
+
+	# preview((ys_train, xs_train), (ys_test, xs_test))
+	# exit(0)
 
 	k2i = {
-		'g': 2,
-		'p': 1
+		'rbf' : 2,
+		'poly': 1
 	}
 
-	midx = n2i[sys.argv[1]]
-	ktype = k2i[sys.argv[2]]
-	gamma = float(sys.argv[3])
+	methods = {
+		"wta": wta_svm,
+		"mwv": mwv_svm
+	}
 
-	ys_test, xs_test = read_dataset(test_path, shuffle=True)
-	ys_train, xs_train = read_dataset(train_path, shuffle=True)
-
-	methods = [wta_svm, mwv_svm]
-
-	methods[midx](ys_test, xs_test, ys_train, xs_train, ktype, gamma)
+	methods[sys.argv[1]](ys_test, xs_test, ys_train, xs_train, ktype=k2i[sys.argv[2]], gamma=float(sys.argv[3]))
 
 
 if __name__ == '__main__':

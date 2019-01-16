@@ -47,17 +47,23 @@ def classify(
 	print(f"Classification report for classifier {classifier}:\n{cr}\n")
 
 	cm = metrics.confusion_matrix(y_test[idx_test], predicted)
-	plot_confusion_matrix(cm)
+	plot_confusion_matrix(cm, cmap=plt.cm.rainbow)
 	plt.show()
 
 
 def main() -> None:
 	mnist_train, mnist_test = get_mnist_data()
 
+	# u, c = np.unique(mnist_train[0].reshape(60000, -1), return_counts=True)
+	# plt.bar(u, c, width=0.01)
+	# # plt.xticks(np.arange(10))
+	# plt.show()
+	# exit(0)
+
 	# preview(mnist_train, mnist_test)
 
-	# RBF kernel, C = soft margin parameter
-	classifier = svm.SVC(C=1, gamma=0.05)
+	# classifier = svm.SVC(kernel="poly", C=3, gamma=0.01, coef0=0.5)
+	classifier = svm.SVC(kernel="rbf", C=2, gamma=0.02)
 
 	classify(mnist_train, mnist_test, classifier, sizes=(3000, 1000))
 

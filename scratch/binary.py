@@ -1,6 +1,10 @@
 import random
+import sys
+from collections import defaultdict
 
-import svm
+import matplotlib.pyplot as plt
+import numpy as np
+
 import svmutil
 
 data_path = "../data/mushrooms"
@@ -46,12 +50,12 @@ def gaussian_rbf(ys_test, xs_test, ys_train, xs_train):
 	results = {}
 	num_features = len(xs_test[0])
 
-	# gammas = np.logspace(-4, 0, num=20)
-	gammas = [1.0 / num_features]
+	gammas = np.logspace(-4, 0, num=6)
+	# gammas = [1.0 / num_features]
 
 	for i, g in enumerate(gammas):
-		svm_params = '-t 2 -g ' + str(round(g, 5))
-		print("{}".format(i), svm_params, "-" * 80)
+		svm_params = '-h 0 -t 2 -g ' + str(round(g, 5))
+		print("\n\n{}\n".format(i), svm_params, "-" * 80)
 
 		m = svmutil.svm_train(ys_train, xs_train, svm_params)
 		p_label, p_acc, p_val = svmutil.svm_predict(ys_test, xs_test, m)
@@ -59,10 +63,10 @@ def gaussian_rbf(ys_test, xs_test, ys_train, xs_train):
 		results[g] = p_acc
 
 	for g, acc in results.items():
-		print("{} gives {}".format(g, acc))
+		print("%f gives %f\n" % (g, acc))
 
 
-def polinomial(ys_test, xs_test, ys_train, xs_train):
+def polynomial(ys_test, xs_test, ys_train, xs_train):
 	"""
 	(gamma*u'*v + coef0)^degree
 	vary gamma, coef0, degree
@@ -97,7 +101,7 @@ def polinomial(ys_test, xs_test, ys_train, xs_train):
 		print("{} gives {}".format(params, acc))
 
 
-def liniar(ys_test, xs_test, ys_train, xs_train):
+def linear(ys_test, xs_test, ys_train, xs_train):
 	"""
 	u'*v
 	nothing to vary
@@ -107,21 +111,50 @@ def liniar(ys_test, xs_test, ys_train, xs_train):
 	p_label, p_acc, p_val = svmutil.svm_predict(ys_test, xs_test, m)
 
 
-def main():
+def get_data():
 	ys, xs = svmutil.svm_read_problem(data_path)
 	data = list(zip(ys, xs))
 	random.shuffle(data)
 
-	split = 1500
-	# split = 2000
+	return data
+
+
+def preview(data):
+	ys, xs = zip(*data)
+	x_counts = defaultdict(lambda: 0)
+	y_counts = defaultdict(lambda: 0)
+
+	for i in range(len(xs)):
+		for k in xs[i].keys():
+			x_counts[k] += 1
+		y_counts[ys[i]] += 1
+
+	fig, ax = plt.subplots(figsize=(10, 10))
+	ax.bar(y_counts.keys(), y_counts.values(), 0.5, color='g')
+	plt.xticks(np.arange(1, 3))
+	# plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
+	plt.show()
+	pass
+
+
+def main():
+	data = get_data()
+
+	# preview(data)
+	# exit(0)
+
+	# split = 1500
+	split = 2000
 	ys_test, xs_test = [v[0] for v in data[:split]], [v[1] for v in data[:split]]
 	ys_train, xs_train = [v[0] for v in data[split:]], [v[1] for v in data[split:]]
 
-	tests = [
-		gaussian_rbf, polinomial, liniar
-	]
+	kernels = {
+		"rbf" : gaussian_rbf,
+		"poly": polynomial,
+		"lin" : linear
+	}
 
-	tests[1](ys_test, xs_test, ys_train, xs_train)
+	kernels[sys.argv[1]](ys_test, xs_test, ys_train, xs_train)
 
 
 if __name__ == '__main__':
