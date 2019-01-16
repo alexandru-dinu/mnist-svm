@@ -10,10 +10,10 @@ import svmutil
 data_path = "../data/mushrooms"
 
 """
-Examples of options: -s 0 -c 10 -t 1 -g 1 -r 1 -d 3 
+Examples of options: -s 0 -c 10 -t 1 -g 1 -r 1 -d 3
 Classify a binary data with polynomial kernel (u'v+1)^3 and C = 10
 
- 
+
 options:
 -s svm_type : set type of SVM (default 0)
 	0 -- C-SVC
@@ -63,7 +63,7 @@ def gaussian_rbf(ys_test, xs_test, ys_train, xs_train):
 		results[g] = p_acc
 
 	for g, acc in results.items():
-		print("%f gives %f\n" % (g, acc))
+		print("%f gives" % (g), acc, "\n")
 
 
 def polynomial(ys_test, xs_test, ys_train, xs_train):
