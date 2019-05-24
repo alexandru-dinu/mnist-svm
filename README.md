@@ -1,6 +1,6 @@
 # Classification tests using SVM
 
-To create `libsvm` bindings, first run `add-lib.sh`.
+To create `libsvm` bindings, first run `init-all.sh`.
 The script will compile the shared library `libsvm.so` and will generate the necessary python symlinks.
 
 For a quick run, do `./init-all.sh && ./show-off.sh`.
