@@ -13,7 +13,7 @@ def get_mnist_data() -> Tuple[Tuple[np.ndarray, np.ndarray], Tuple[np.ndarray, n
     print("[+] Fetching data...")
 
     path = os.path.join(os.path.dirname(
-        os.path.abspath(__file__)), "../data/mnist")
+        os.path.abspath(__file__)), "../data")
 
     # 60000 x 28 x 28
     train_loader = datasets.MNIST(path, train=True, download=True)
